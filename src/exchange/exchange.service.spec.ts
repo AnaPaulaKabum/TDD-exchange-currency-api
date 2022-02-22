@@ -4,8 +4,6 @@ import { CurrenciesService} from '../currencies/currencies.service';
 import { ExchangeService } from './exchange.service';
 import { ExchangeInputType } from './types/exchange-input.type';
 
-
-
 describe('ExchangeService', () => {
   let service: ExchangeService;
   let currenciesServices: CurrenciesService;
