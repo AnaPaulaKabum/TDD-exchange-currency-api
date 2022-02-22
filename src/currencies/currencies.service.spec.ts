@@ -1,15 +1,15 @@
 import { BadRequestException, InternalServerErrorException } from '@nestjs/common/exceptions';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Currencies, CurrenciesRepository, CurrenciesService } from './currencies.service';
+import { Currencies } from './currencies.entity';
+import { CurrenciesRepository } from './currencies.repository';
+import { CurrenciesService } from './currencies.service';
 
 describe('CurrenciesService', () => {
   let service: CurrenciesService;
   let currenciesRepository: CurrenciesRepository;
   let mockData : Currencies;
 
-  beforeEach(async () => {
-
-    
+  beforeEach(async () => {    
     const module: TestingModule = await Test.createTestingModule({
       providers: [CurrenciesService,
       {  provide: CurrenciesRepository,
@@ -23,7 +23,7 @@ describe('CurrenciesService', () => {
 
     service = module.get<CurrenciesService>(CurrenciesService);
     currenciesRepository = module.get<CurrenciesRepository>(CurrenciesRepository);
-    mockData = {currency:'USD',value:1};
+    mockData = {currency:'USD',value:1} as Currencies ;
   });
 
   it('should be defined', () => {
@@ -35,7 +35,6 @@ describe('CurrenciesService', () => {
       jest.spyOn(currenciesRepository,'getCurrency').mockRejectedValueOnce(new InternalServerErrorException());
       await expect(service.getCurrency('INVALID')).rejects.toThrow(new InternalServerErrorException());
     });
-
 
     it('should be throw if repository returns ', async () => {
 
@@ -107,7 +106,7 @@ describe('CurrenciesService', () => {
        it('should be throw if value <=0 ', async () => {
         mockData.value = 0;
         await expect(service.updateCurrency(mockData)).rejects.toThrow(new BadRequestException("The value must be greater zero"));
-       })
+       });
 
        it('should be return when repository return', async () => {
         jest.spyOn(currenciesRepository,'updateCurrency').mockResolvedValueOnce(mockData);    
@@ -133,8 +132,4 @@ describe('CurrenciesService', () => {
         expect(currenciesRepository.deleteCurrency).toBeCalledWith(mockData.currency);
        });
     });
-  
-  
-  
-
 });

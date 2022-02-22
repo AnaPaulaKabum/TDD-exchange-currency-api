@@ -1,34 +1,7 @@
 import {Injectable } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common/exceptions';
-
-export class Currencies{
-    currency:string;
-    value:number;
-}
-
-
-export class CurrenciesRepository{
-
-    async getCurrency(currency:string):Promise<Currencies>{
-        return new Currencies();
-    }
-
-    async createCurrency({currency, value}):Promise<Currencies>{
-        return new Currencies();
-    }
-
-    async updateCurrency({currency, value}):Promise<Currencies>{
-        return new Currencies();
-    }
-
-    async deleteCurrency(currency:string):Promise<void>{
-        return ;
-    }
-
-
-
-
-}
+import { Currencies } from './currencies.entity';
+import { CurrenciesRepository } from './currencies.repository';
 
 @Injectable()
 export class CurrenciesService{
@@ -36,7 +9,8 @@ export class CurrenciesService{
     constructor ( private currenciesRepository : CurrenciesRepository){}
 
     async getCurrency(currency:string):Promise<Currencies>{
-            return await this.currenciesRepository.getCurrency(currency);
+
+        return await this.currenciesRepository.getCurrency(currency);
     }
 
     async createCurrency({currency, value}):Promise<Currencies>{
@@ -59,7 +33,5 @@ export class CurrenciesService{
 
     async deleteCurrency(currency:string):Promise<void>{
         await this.currenciesRepository.deleteCurrency(currency);
+    }
 }
-
-}
-
