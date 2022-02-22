@@ -1,20 +1,21 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CurrenciesServices, ExchangeService } from './exchange.service';
+import { CurrenciesService} from '../currencies/currencies.service';
+import { ExchangeService } from './exchange.service';
 import { ExchangeInputType } from './types/exchange-input.type';
 
 
 
 describe('ExchangeService', () => {
   let service: ExchangeService;
-  let currenciesServices: CurrenciesServices;
+  let currenciesServices: CurrenciesService;
   let mockData : ExchangeInputType; 
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ExchangeService,CurrenciesServices,
+      providers: [ExchangeService,CurrenciesService,
         {
-        provide: CurrenciesServices,
+        provide: CurrenciesService,
         useValue:{
           getCurrency: jest.fn().mockReturnValue({value:1}),
         }
@@ -23,7 +24,7 @@ describe('ExchangeService', () => {
     }).compile();
 
     service = module.get<ExchangeService>(ExchangeService);
-    currenciesServices = module.get<CurrenciesServices>(CurrenciesServices);
+    currenciesServices = module.get<CurrenciesService>(CurrenciesService);
     mockData = {from:'USD',to:'BRL',amount:1};
   });
 
