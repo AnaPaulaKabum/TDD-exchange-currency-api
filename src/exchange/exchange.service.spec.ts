@@ -13,7 +13,7 @@ describe('ExchangeService', () => {
         {
         provide: CurrenciesServices,
         useValue:{
-          getCurrency: jest.fn()
+          getCurrency: jest.fn().mockReturnValue({value:1}),
 
         }
       }]
@@ -58,6 +58,21 @@ describe('ExchangeService', () => {
       jest.spyOn(currenciesServices, 'getCurrency').mockRejectedValue(new Error);
       await expect(service.convertAmount({from:'INVALID',to:'BRL',amount:1})).rejects.toThrow();
 
+    }) 
+
+
+    it('should be return conversion value', async () => {
+
+      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({value:1});
+      expect( await service.convertAmount({from:'USD',to:'BRL',amount:1})).toEqual({amount:1});
+
+      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({value:1});
+      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({value:0.2});
+      expect( await service.convertAmount({from:'USD',to:'BRL',amount:1})).toEqual({amount:5});
+
+      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({value:0.2});
+      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({value:1});
+      expect( await service.convertAmount({from:'USD',to:'BRL',amount:1})).toEqual({amount:0.2});
     }) 
 
 
