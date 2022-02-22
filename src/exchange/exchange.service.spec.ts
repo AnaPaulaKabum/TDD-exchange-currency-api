@@ -49,10 +49,17 @@ describe('ExchangeService', () => {
     it('should be called getCurrency with correct params', async () => {
 
       await service.convertAmount({from:'USD',to:'BRL',amount:1});
-
-      expect(currenciesServices.getCurrency).toBeCalledWith('USD');
-      expect(currenciesServices.getCurrency).toHaveBeenLastCalledWith('BRL');
+      await expect(currenciesServices.getCurrency).toBeCalledWith('USD');
+      await expect(currenciesServices.getCurrency).toHaveBeenLastCalledWith('BRL');
     }) 
+
+    it('should be throw when getCurrency throw', async () => {
+
+      jest.spyOn(currenciesServices, 'getCurrency').mockRejectedValue(new Error);
+      await expect(service.convertAmount({from:'INVALID',to:'BRL',amount:1})).rejects.toThrow();
+
+    }) 
+
 
 
 
