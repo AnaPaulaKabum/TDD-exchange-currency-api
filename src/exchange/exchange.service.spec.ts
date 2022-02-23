@@ -1,7 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Currencies } from 'src/currencies/currencies.entity';
-import { CurrenciesInputType } from 'src/currencies/types/currencies-input.type';
 import { CurrenciesService} from '../currencies/currencies.service';
 import { ExchangeService } from './exchange.service';
 import { ExchangeInputType } from './types/exchange-input.type';
@@ -92,12 +91,5 @@ describe('ExchangeService', () => {
       jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'USB',value:1} as Currencies);
       expect( await service.convertAmount(mockData)).toEqual({amount:0.2});
     }) 
-
-
-
-
-
   });
-
-
 });
