@@ -64,7 +64,7 @@ describe('CurrenciesController', () => {
 
       jest.spyOn(service,'createCurrency').mockRejectedValueOnce(new BadRequestException())
       await expect(controller.createCurrency(mockData)).rejects.toThrow(new BadRequestException());
-    })
+    });
     
     it('should be called with corrects params', async () => {
     
@@ -76,9 +76,21 @@ describe('CurrenciesController', () => {
     
       jest.spyOn(service,'createCurrency').mockResolvedValueOnce(mockData);
       expect( await controller.createCurrency(mockDAtaDTO)).toEqual(mockData);
+    });    
+  });
+
+  describe('deleteCurrency', () => {
+    it('should be throw when service throw', async () => {
+
+      jest.spyOn(service,'deleteCurrency').mockRejectedValueOnce(new BadRequestException())
+      await expect(controller.deleteCurrency('INVALID')).rejects.toThrow(new BadRequestException());
     });
+
+    it('should be called with corrects params', async () => {
     
-    
+      await controller.deleteCurrency(mockData.currency)   
+      expect(service.deleteCurrency).toBeCalledWith(mockData.currency);
+    });
   });
 
 });
