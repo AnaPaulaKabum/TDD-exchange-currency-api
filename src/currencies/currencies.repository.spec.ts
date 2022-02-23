@@ -1,6 +1,5 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { async } from 'rxjs';
 import { Currencies } from './currencies.entity';
 import { CurrenciesRepository } from './currencies.repository';
 
@@ -46,10 +45,41 @@ describe('CurrenciesService', () => {
 
       it('should be returns when find cone return', async() => {
 
-
         jest.spyOn(repository,'findOne').mockReturnValueOnce(mockData);
         expect(await repository.getCurrency('USD')).toEqual(mockData);
       });        
+    });
+
+    describe('createCurrency()', () => {
+
+      beforeEach(async () => {    
+        repository.save = jest.fn();
+      });
+
+        it('should be called save with correct params', async() => {
+  
+            jest.spyOn(repository,'save').mockReturnValueOnce(mockData);
+            await repository.createCurrency(mockData);
+            expect(repository.save).toBeCalledWith(mockData);
+        });
+
+        it('should be throw when save throw', async() => {
+  
+          jest.spyOn(repository,'save').mockRejectedValueOnce(new Error());
+          await expect(repository.createCurrency(mockData)).rejects.toThrow();
+        });
+
+        it('should be throw invalid params', async() => {
+  
+          mockData.currency = 'INVALID';
+          await expect(repository.createCurrency(mockData)).rejects.toThrow();
+        });
+
+
+        it('should be returns created data', async() => {
+  
+          expect(await repository.createCurrency(mockData)).toEqual(mockData);
+      });
 
     });
 

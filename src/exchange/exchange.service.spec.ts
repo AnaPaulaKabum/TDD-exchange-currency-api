@@ -1,5 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Currencies } from 'src/currencies/currencies.entity';
+import { CurrenciesInputType } from 'src/currencies/types/currencies-input.type';
 import { CurrenciesService} from '../currencies/currencies.service';
 import { ExchangeService } from './exchange.service';
 import { ExchangeInputType } from './types/exchange-input.type';
@@ -75,19 +77,19 @@ describe('ExchangeService', () => {
 
       mockData.from = 'USB';
       mockData.to = 'USB';
-      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'USB',value:1});
+      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'USB',value:1} as Currencies);
       expect( await service.convertAmount(mockData)).toEqual({amount:1});
 
       mockData.from = 'USB';
       mockData.to = 'BRL';
-      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'USB',value:1});
-      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'BRL',value:0.2});
+      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'USB',value:1} as Currencies);
+      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'BRL',value:0.2} as Currencies);
       expect( await service.convertAmount(mockData)).toEqual({amount:5});
 
       mockData.from = 'BRL';
       mockData.to = 'USB';
-      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'BRL',value:0.2});
-      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'USB',value:1});
+      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'BRL',value:0.2}  as Currencies);
+      jest.spyOn(currenciesServices, 'getCurrency').mockResolvedValueOnce({currency:'USB',value:1} as Currencies);
       expect( await service.convertAmount(mockData)).toEqual({amount:0.2});
     }) 
 
