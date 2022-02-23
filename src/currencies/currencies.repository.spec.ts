@@ -1,4 +1,4 @@
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Currencies } from './currencies.entity';
 import { CurrenciesRepository } from './currencies.repository';
@@ -11,18 +11,17 @@ describe('CurrenciesService', () => {
 
     beforeEach(async () => {    
       const module: TestingModule = await Test.createTestingModule({
-        providers: [CurrenciesRepository,
-        /*{  provide: CurrenciesService,
-          useValue:{
-            getCurrency: jest.fn(),
-            createCurrency:jest.fn(),
-            updateCurrency:jest.fn(),
-            deleteCurrency:jest.fn()
-          }}*/],
+        providers: [CurrenciesRepository],
       }).compile();
   
       repository = module.get<CurrenciesRepository>(CurrenciesRepository);
+
       mockData = {currency:'USD', value : 1} as Currencies;
+
+      repository.findOne = jest.fn();
+      repository.save = jest.fn();
+      repository.update = jest.fn();
+      repository.delete = jest.fn();
     });
 
     it('should be defined', () => {
@@ -52,10 +51,6 @@ describe('CurrenciesService', () => {
 
     describe('createCurrency()', () => {
 
-      beforeEach(async () => {    
-        repository.save = jest.fn();
-      });
-
         it('should be called save with correct params', async() => {
   
             jest.spyOn(repository,'save').mockReturnValueOnce(mockData);
@@ -75,16 +70,78 @@ describe('CurrenciesService', () => {
           await expect(repository.createCurrency(mockData)).rejects.toThrow();
         });
 
-
         it('should be returns created data', async() => {
   
           expect(await repository.createCurrency(mockData)).toEqual(mockData);
       });
-
     });
 
+    describe('updateCurrency()', () => {
+      it('should be called findOne with correct params', async() => {
 
+          jest.spyOn(repository,'findOne').mockReturnValueOnce({});
+          await repository.updateCurrency(mockData);
+          expect(repository.findOne).toBeCalledWith({currency: 'USD'});
+      });
 
+      it('should be throw findOne returns empty', async() => {
 
+        jest.spyOn(repository,'findOne').mockReturnValueOnce(undefined);
+        await expect(repository.updateCurrency(mockData)).rejects.
+        toThrow(new NotFoundException(`The currency ${mockData.currency} not found.`));
+      });
 
+      it('should be called update with correct params', async() => {
+  
+        jest.spyOn(repository,'findOne').mockReturnValueOnce(mockData);
+        jest.spyOn(repository,'save').mockReturnValueOnce(mockData);
+        await repository.updateCurrency(mockData);
+        expect(repository.save).toBeCalledWith(mockData);
+      });
+
+    it('should be throw when save throw', async() => {
+  
+      jest.spyOn(repository,'findOne').mockReturnValueOnce(mockData);
+      jest.spyOn(repository,'save').mockRejectedValueOnce(new Error());
+      await expect(repository.updateCurrency(mockData)).rejects.toThrow();
+    });
+
+    it('should be returns data update data', async() => {
+  
+      jest.spyOn(repository,'findOne').mockReturnValueOnce({currency:'USD', value : 1});
+      jest.spyOn(repository,'save').mockReturnValueOnce({});
+      const resultado = await repository.updateCurrency({currency:'USD', value : 2});
+      expect(resultado).toEqual({currency:'USD', value : 2});
+    });
+  });
+
+    describe('deleteCurrency()', () => {
+      it('should be findOne with correct params', async() => {
+
+          jest.spyOn(repository,'findOne').mockReturnValueOnce({});
+          await repository.deleteCurrency('USD');
+          expect(repository.findOne).toBeCalledWith({currency: 'USD'});
+      });
+
+      it('should be throw findOne returns empty', async() => {
+
+        jest.spyOn(repository,'findOne').mockReturnValueOnce(undefined);
+        await expect(repository.deleteCurrency('USD')).rejects.
+        toThrow(new NotFoundException(`The currency ${mockData.currency} not found.`));
+      });
+
+      it('should be  called delete with correct params', async() => {
+
+        jest.spyOn(repository,'findOne').mockReturnValueOnce(mockData);
+        jest.spyOn(repository,'delete').mockReturnValueOnce({});
+        const result = await expect(repository.deleteCurrency('USD'));
+        expect(repository.delete).toBeCalledWith({currency: 'USD'});
+      });
+
+      it('should be throw when delete throw', async() => {
+  
+        jest.spyOn(repository,'delete').mockRejectedValueOnce(new Error());
+        await expect(repository.deleteCurrency('USD')).rejects.toThrow();
+      });
+    });
 });
