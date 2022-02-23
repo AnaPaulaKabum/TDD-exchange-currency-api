@@ -20,6 +20,12 @@ export class CurrenciesRepository extends Repository<Currencies>{
 
     async createCurrency(createCurrencyDTO: CreateCurrencyDTO):Promise<Currencies>{
 
+        const result = await this.findOne(createCurrencyDTO.currency);
+
+        if (result){
+            throw new InternalServerErrorException(`Currency ${createCurrencyDTO.currency} already created`);
+        }
+
         const createCurrency =  new Currencies();
         createCurrency.currency = createCurrencyDTO.currency;
         createCurrency.value = createCurrencyDTO.value;
@@ -27,9 +33,10 @@ export class CurrenciesRepository extends Repository<Currencies>{
         try {
             await validateOrReject(createCurrency);
             await this.save(createCurrency);
-        } catch (error) {
             
-            throw new InternalServerErrorException(error);
+        } catch (error) {
+
+            throw new InternalServerErrorException(error);     
         }
 
         return createCurrency;

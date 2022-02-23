@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, Length } from "class-validator";
+import { IsNotEmpty, IsNumber, IsNumberString, Length } from "class-validator";
 
 export class CreateCurrencyDTO {
     @IsNotEmpty()

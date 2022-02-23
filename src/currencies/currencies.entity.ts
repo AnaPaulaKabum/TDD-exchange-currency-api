@@ -1,13 +1,13 @@
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, Length } from 'class-validator';
-import { Entity,Unique,ObjectIdColumn,PrimaryColumn,Column,CreateDateColumn } from 'typeorm'
+import { Entity,Unique,ObjectIdColumn,PrimaryColumn,Column,CreateDateColumn, PrimaryGeneratedColumn } from 'typeorm'
 
 @Unique(['currency'])
 @Entity()
 export class Currencies{
 
-    @ObjectIdColumn()
-    _id:string;
+    /*@PrimaryGeneratedColumn()
+    id:string;*/
 
     @PrimaryColumn()
     @Length(3,3)

@@ -64,6 +64,24 @@ describe('CurrenciesService', () => {
           await expect(repository.createCurrency(mockData)).rejects.toThrow();
         });
 
+        it('should be throw when findOne throw', async() => {
+  
+          jest.spyOn(repository,'findOne').mockRejectedValueOnce(new Error());
+          await expect(repository.createCurrency(mockData)).rejects.toThrow();
+        });
+
+        it('should be findOne undefined returm data', async() => {
+  
+          jest.spyOn(repository,'findOne').mockReturnValueOnce(undefined);
+          expect(await repository.createCurrency(mockData)).toEqual(mockData);
+        });
+
+        it('should be findOne data returm throw', async() => {
+  
+          jest.spyOn(repository,'findOne').mockReturnValueOnce(mockData);
+          await expect(repository.createCurrency(mockData)).rejects.toThrow()
+        });
+
         it('should be throw invalid params', async() => {
   
           mockData.currency = 'INVALID';
