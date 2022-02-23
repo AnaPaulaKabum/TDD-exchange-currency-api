@@ -30,9 +30,7 @@ describe('CurrenciesController', () => {
     service    = module.get<CurrenciesService>(CurrenciesService);
 
     mockData = {currency:'USD', value : 1} as Currencies;
-    mockData
-
-
+    mockDAtaDTO = {currency:'USD', value : 1} as CreateCurrencyDTO;
   });
 
   it('should be defined', () => {
@@ -91,6 +89,26 @@ describe('CurrenciesController', () => {
       await controller.deleteCurrency(mockData.currency)   
       expect(service.deleteCurrency).toBeCalledWith(mockData.currency);
     });
+  });
+
+  describe('updateCurrency', () => {
+    it('should be throw when service throw', async () => {
+
+      jest.spyOn(service,'updateCurrency').mockRejectedValueOnce(new BadRequestException())
+      await expect(controller.updateCurrency('USD',1)).rejects.toThrow(new BadRequestException());
+    });
+    
+    it('should be called with corrects params', async () => {
+    
+      await controller.updateCurrency('USD',1)   
+      expect(service.updateCurrency).toBeCalledWith(mockData);
+    });
+
+    it('should be returns when services returns', async () => {
+    
+      jest.spyOn(service,'updateCurrency').mockResolvedValueOnce(mockData);
+      expect( await controller.updateCurrency('USD',1)).toEqual(mockData);
+    });  
   });
 
 });
