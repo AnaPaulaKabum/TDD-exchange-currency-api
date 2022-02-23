@@ -39,7 +39,7 @@ describe('CurrenciesService', () => {
       it('should be throw findOne returns empty', async() => {
 
         jest.spyOn(repository,'findOne').mockReturnValueOnce(undefined);
-        await expect(repository.getCurrency('USD')).rejects.toThrow(new InternalServerErrorException());
+        await expect(repository.getCurrency('USD')).rejects.toThrow(new NotFoundException(`The currency USD not found.`));
       });
 
       it('should be returns when find cone return', async() => {

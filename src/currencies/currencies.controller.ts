@@ -21,15 +21,13 @@ export class CurrenciesController {
         return await this.currienciesService.createCurrency(createCurrencyDTO);
     } 
 
-    @Delete()
-    @Get('/:currency')
+    @Delete('/:currency')
     async deleteCurrency(@Param('currency') currency:string): Promise<void>{
         return await this.currienciesService.deleteCurrency(currency);
     }
 
     @Patch('/:currency/value')
-    @UsePipes(ValidationPipe)
-    async updateCurrency(@Param('currency') currency:string, @Body('value') value:number): Promise<Currencies>{ 
+    async updateCurrency(@Param('currency') currency: string, @Body('value') value: number) {
 
         return  await this.currienciesService.updateCurrency({currency,value});
     } 
