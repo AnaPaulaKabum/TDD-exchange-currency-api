@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, Length } from 'class-validator';
-import { Entity,Unique,ObjectIdColumn,PrimaryColumn,Column,CreateDateColumn, PrimaryGeneratedColumn } from 'typeorm'
+import { IsCurrency, IsNotEmpty, IsNumber, isNumberString, Length } from 'class-validator';
+import { Entity,Unique,ObjectIdColumn,PrimaryColumn,Column,CreateDateColumn, PrimaryGeneratedColumn, Double } from 'typeorm'
+import { isFloat32Array } from 'util/types';
 
 @Unique(['currency'])
 @Entity()
@@ -14,10 +15,10 @@ export class Currencies{
     @IsNotEmpty()
     currency:string;
 
-    @Column()
+    @Column("double")
     @IsNotEmpty()
     @IsNumber()
-    value:number;
+    value: number;
 
     @CreateDateColumn({type:'timestamp'})
     createAt:Date;

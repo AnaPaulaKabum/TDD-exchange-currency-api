@@ -3,12 +3,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Currencies } from 'src/currencies/currencies.entity';
 import { CurrenciesService} from '../currencies/currencies.service';
 import { ExchangeService } from './exchange.service';
-import { ExchangeInputType } from './types/exchange-input.type';
+import { ExchangeInputDto } from './dto/exchange-input.dto';
 
 describe('ExchangeService', () => {
   let service: ExchangeService;
   let currenciesServices: CurrenciesService;
-  let mockData : ExchangeInputType; 
+  let mockData : ExchangeInputDto; 
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
